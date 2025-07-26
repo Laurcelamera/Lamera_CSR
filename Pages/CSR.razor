@@ -1,0 +1,60 @@
+﻿@page "/Lamera_CSR"
+@using Lamera_CSR.Data
+<h3>Customer Service Representatives Logger</h3>
+
+<div>
+    <label>Name:</label>
+    <input @bind="employeeName" />
+</div>
+<div>
+    <label>Company:</label>
+    <input @bind="company" />
+</div>
+<div>
+    <label>Age:</label>A
+    <input @bind="age" />
+</div>
+<div>
+    <label>Call Minutes (comma-separated):</label>
+    <input @bind="callMinutesInput" />
+</div>
+<div>
+    <button @onclick="LogCall">Log Call</button>
+</div>
+
+@if (results.Count > 0)
+{
+    <h4>Results:</h4>
+    @foreach (var result in results)
+    {
+        <p>@result</p>
+    }
+
+    <h4>Most Efficient:</h4>
+    <p>@mostEfficient</p>
+
+    <h4>Least Efficient:</h4>
+    <p>@leastEfficient</p>
+}
+
+@code {
+    private string employeeName;
+    private string company;
+    private int age;
+    private string callMinutesInput;
+    private List<string> results = new List<string>();
+    private string mostEfficient = "";
+    private string leastEfficient = "";
+
+    private CSR csr;
+
+    private void LogCall()
+    {
+        var callMinutes = callMinutesInput.Split(',').Select(double.Parse).ToArray();
+        csr = new CSR(employeeName, company, age, callMinutes);
+
+        results.Add($"{csr.EmployeeName}'s average call time is {csr.GetAverageCallTime()} minutes");
+        mostEfficient = $"The most efficient is {csr.GetMostEfficient()}";
+        leastEfficient = $"The least efficient is {csr.GetLeastEfficient()}";
+    }
+}
